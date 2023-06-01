@@ -702,3 +702,110 @@ JOIN auditorium a ON sm.audi_id = a.audi_id
 WHERE a.audi_id = 6; 
 
 
+[01/06, 05:40] Gzlyz Szabist: Q1) 
+Department count with country order by country name
+
+Q2) 
+Lastname of those employees who works in more than one department.
+
+Q3)Show locations that do not have departments.
+
+Q4) rank employees according to their salaries for example employee with maximum salary will have rank 1 and so on. If two employees have same salary so their rank will be same.
+
+Q5)
+Create tables and insert five rows in each table (including foreign keys and primary keys)
+
+Q5.b
+Create view
+Q5.c
+Create insert and update procedure
+[01/06, 05:40] Gzlyz Szabist: Q1)   SELECT COUNT(*) AS department_count, c.country_name
+FROM departments d
+JOIN locations l ON d.location_id = l.location_id
+JOIN countries c ON l.country_id = c.country_id
+GROUP BY c.country_name
+ORDER BY c.country_name;
+[01/06, 05:40] Gzlyz Szabist: Q2)SELECT last_name
+FROM employees
+GROUP BY last_name
+HAVING COUNT(DISTINCT department_id) > 1;
+[01/06, 05:40] Gzlyz Szabist: Q3)SELECT l.location_id, l.city, c.country_name
+FROM locations l
+JOIN countries c ON l.country_id = c.country_id
+LEFT JOIN departments d ON l.location_id = d.location_id
+WHERE d.location_id IS NULL;
+[01/06, 05:40] Gzlyz Szabist: Q4)SELECT employee_id, first_name, last_name, salary,
+       (SELECT COUNT(*) FROM employees e2 WHERE e2.salary > e1.salary)+1 AS salary_rank
+FROM employees e1
+ORDER BY salary DESC;
+[01/06, 06:06] umairsolangiceo: 1) SELECT COUNT(department) AS DepartmentCount, Country
+FROM Department
+GROUP BY Country
+ORDER BY Country;
+
+2) SELECT LastName
+FROM Employees
+GROUP BY LastName
+HAVING COUNT(DISTINCT DepartmentID) > 1;
+
+3)SELECT Location
+FROM Locations
+LEFT JOIN Departments ON Locations.LocationID = Departments.LocationID
+WHERE Departments.LocationID IS NULL;
+
+4) SELECT EmployeeID, Salary, DENSE_RANK() OVER (ORDER BY Salary DESC) AS SalaryRank
+FROM Employees;
+
+5a) -- Create the tables
+CREATE TABLE Table1 (
+    ID INT PRIMARY KEY,
+    Column1 VARCHAR(50)
+);
+
+CREATE TABLE Table2 (
+    ID INT PRIMARY KEY,
+    Column2 INT,
+    FOREIGN KEY (Column2) REFERENCES Table1(ID)
+);
+
+-- Insert data into Table1
+INSERT INTO Table1 (ID, Column1)
+VALUES (1, 'Row 1');
+
+INSERT INTO Table1 (ID, Column1)
+VALUES (2, 'Row 2');
+
+-- Insert more rows here...
+
+INSERT INTO Table1 (ID, Column1)
+VALUES (5, 'Row 5');
+
+-- Insert data into Table2
+INSERT INTO Table2 (ID, Column2)
+VALUES (1, 3);
+
+INSERT INTO Table2 (ID, Column2)
+VALUES (2, 4);
+
+-- Insert more rows here...
+
+INSERT INTO Table2 (ID, Column2)
+VALUES (5, 1);
+
+
+5b) CREATE VIEW View1 AS
+SELECT Column1, Column2
+FROM Table1
+WHERE Column2 > 10;
+
+
+5C: CREATE PROCEDURE InsertData
+AS
+BEGIN
+    INSERT INTO Table1 (ID, Column1)
+    VALUES (6, 'New Row 1');
+
+    INSERT INTO Table2 (ID, Column2)
+    VALUES (6, 3);
+END;
+635422
